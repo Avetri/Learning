@@ -48,6 +48,13 @@ int main(int, char**) {
     }
     head = third;
 
+    first.reset();
+    second.reset();
+    third.reset();
+
+    sl.reset();
+    sl = head;
+
     while (nullptr != head.get()) {
         std::cout << head->value << " ";
         auto next = head->next;
@@ -55,6 +62,8 @@ int main(int, char**) {
         head = next;
     }
     std::cout << std::endl;
+
+    sl.reset();
 
     return 0;
 }
