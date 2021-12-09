@@ -1,65 +1,60 @@
 #include <iostream>
 
-template <typename T> struct Node{
-    Node(T value, Node<T>* next) {
-        this->value = value;
-        this->next  = next;
-    }
-    Node(T value) {
-        this->value = value;
-        this->next  = NULL;
-    }
-    Node(std::initializer_list<T> list) {
-        struct Node<T>* head = NULL;
-        for (T node: list) {
-            if (NULL == head) {
-                this->value = node;
-                this->next  = NULL;
-                head = this; 
-            } else {
-                head->next = new Node<T>(node);
-                head = head->next;
-            }
+#include "fl_node.h"
+
+int main(int, char**) {
+    auto ll = {0, 1, 2, 3, 4, 5, 6, 7};
+    auto sl = std::make_shared<FLNode<int>>(ll);
+
+    {
+        auto head = sl;
+        while (nullptr != head.get()) {
+            std::cout << head->value << " ";
+            auto next = head->next;
+            head.reset();
+            head = next;
         }
+        std::cout << std::endl;
     }
-    T value;
-    Node<T>* next;
-};
 
-int main(int argc, char** argv) {
-    struct Node<int> sl = {0, 1, 2, 3, 4, 5, 6, 7};
-
-    struct Node<int>* head = &sl;
-    while (NULL != head) {
-        std::cout << head->value << " ";
-        head = head->next;
-    }
-    std::cout << std::endl;
-
-    struct Node<int>* first = NULL;
-    struct Node<int>* second = NULL;
-    struct Node<int>* third = NULL;
-    head = &sl;
-    while (NULL != head) {
-        if (NULL != second) {
+    std::shared_ptr<FLNode<int>> empty(nullptr);
+    auto first = empty;
+    auto second = empty;
+    auto third = empty;
+    auto head = sl;
+    while (nullptr != head.get()) {
+        if (nullptr != second.get()) {
+            second->next.reset();
             second->next = first;
         }
+        first.reset();
         first = second;
+        second.reset();
         second = third;
+        third.reset();
         third = head;
-        head = head->next;
+        auto next = head->next;
+        head.reset();
+        head = next;
     }
-    if (NULL != second) {
+
+    if (nullptr != second.get()) {
+        second->next.reset();
         second->next = first;
     }
-    if (NULL != third) {
+    if (nullptr != third.get()) {
+        third->next.reset();
         third->next = second;
     }
     head = third;
-    while (NULL != head) {
+
+    while (nullptr != head.get()) {
         std::cout << head->value << " ";
-        head = head->next;
+        auto next = head->next;
+        head.reset();
+        head = next;
     }
+    std::cout << std::endl;
 
     return 0;
 }
